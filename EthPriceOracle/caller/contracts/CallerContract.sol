@@ -6,6 +6,9 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 // make contract ownable
 contract CallerContract is Ownable {
+    // create ethprive variable 
+    uint256 private ethPrice; 
+
     // declare Ethprive variable 
     EthPriceOracleInterface private oracleInstance;
 
@@ -20,6 +23,9 @@ contract CallerContract is Ownable {
 
     // even tracking if request received
     event ReceivedNewRequestIdEvent(uint256 id);
+    
+    // create event priceupdated 
+    event PriceUpdatedEvent(uint256 ethPrice, uint256 id);
 
     // create function takes oracle instance address and attach modifier
     function setOracleInstanceAddress (address _oracleInstanceAddress) public onlyOwner {
@@ -30,7 +36,7 @@ contract CallerContract is Ownable {
 
         // emit neworacle address 
         emit newOracleAddressEvent(oracleAddress);
-    }
+        }
     // Define function update EthPrice 
     function updateEthPrice () public {
         // call oracle instance and store returned value 
@@ -41,6 +47,26 @@ contract CallerContract is Ownable {
 
         // fire event recevied new request 
         emit ReceivedNewRequestIdEvent(id);
+        }
+    // create callback function to fetch back data
+    function callback(uint256 _ethPrice, uint256 _id) public {
+        // check myrequests[id] is true qith requre 
+        require(myRequests[_id], "This request is not in my pending list.");
 
+        // save new ETH price from function parameter
+        ethPrice = _ethPrice;
+
+        // call delete to remove current id from mapping (because already done)
+        delete myRequests[_id];
+
+        // fire priceupdated event to UI
+        emit PriceUpdatedEvent(_ethPrice, _id);
+        }
+    // create modifier that make sure only owner allowed to call the oracle callback
+    modifier onlyOracle() {
+        // require to make sure msg.sender is oracleAddress if not error
+        require(msg.sender == oracleAddress, "You are not authorized to call this function.");
+        // make it execute rest of function 
+        _;
     }
 }

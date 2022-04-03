@@ -16,3 +16,15 @@ mkdir caller && cd caller && npx truffle init && cd ..
 d
 //EthPriceOracle.js 
 We will create a Javascript component of oracle that fetches ETH price from binance API then build classic client that interacts with the oracle 
+
+Start oracle by running 
+
+```solidity
+node EthPriceOracle.js 
+```
+
+Start the client 
+
+```solidity
+node Client.js
+```

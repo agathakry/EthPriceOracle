@@ -78,3 +78,28 @@ async function processQueue (oracleContract, ownerAddress) {
     }
 }
 // make a function to avoid infinite loops in case of network glitch and lots of requests pending 
+async function processRequest (oracleContract, ownerAddress, id, callerAddress) {
+    // use let to declare variable retries
+    let retries = 0
+
+    // declare while loop that checks if retries are max
+    while (retries < MAX_RETRIES) {
+        // failed HTTP request throws an error, have to wrap code into a try/catch 
+        try {
+            // retrieve latest eth price and call oracle contract to set latest eth price
+            const ethPrice = await retrieveLatestEthPrice() // function that talks to binance API
+
+            // call setlatest price 
+            await setLatestEthPrice(oracleContract, callerAddress, ownerAddress, ethPrice, id)
+
+            // return 
+            return
+
+        } catch (error) {
+            // retries variable starts counting with number 0
+            // 
+
+        }
+    }
+
+}

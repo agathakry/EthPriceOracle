@@ -160,3 +160,19 @@ async function setLatestEthPrice (oracleContract, callerAddress, ownerAddress, e
       // return object containing our infos 
       return { oracleContract, ownerAddress, client }
   }
+
+  // we are processing in batches, so we need to sleep and also be able to shut down oracle
+  (async () => {
+    const { oracleContract, ownerAddress, client } = await init()
+    process.on( 'SIGINT', () => {
+    // exit orache
+      console.log('Calling client.disconnect()')
+      // 1. Execute client.disconnect
+      client.disconnect()
+      process.exit( )
+    })
+    setInterval(async () => {
+      // 2. Run processQueue
+      await processQueue(oracleContract, ownerAddress)
+    }, SLEEP_INTERVAL)
+  })()

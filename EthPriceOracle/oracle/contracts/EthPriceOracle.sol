@@ -1,9 +1,25 @@
 pragma solidity 0.5.0;
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+
+// Adding Roles (Lesson 16 Chapter 1) instead of Ownable (Lesson 15)
+import "openzeppelin-solidity/contracts/access/Roles.sol";
+
+//import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./CallerContractInterface.sol";
 
 // create the ETH price oracle contract ownable 
-contract EthPriceOracle is Ownable {
+//contract EthPriceOracle is Ownable {
+
+// Lesson 16: remove Ownable and use roles instead
+contract EthPriceOracle {
+    // attach roles to the Roles.Role data type
+    using Roles for Roles.Role;
+
+    // declare Roles.Role variable private called owners
+    Roles.Role private owners;
+
+    // declare Roles.Role variable private called oracles
+    Roles.Role private oracles;
+
     // generate random number for the request id (avoid collusions of oracles)
     uint private randNonce = 0;
     uint private modulus = 1000;

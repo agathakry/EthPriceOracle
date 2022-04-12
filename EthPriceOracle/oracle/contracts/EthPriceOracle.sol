@@ -2,6 +2,7 @@ pragma solidity 0.5.0;
 
 // Adding Roles (Lesson 16 Chapter 1) instead of Ownable (Lesson 15)
 import "openzeppelin-solidity/contracts/access/Roles.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 //import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./CallerContractInterface.sol";
@@ -20,12 +21,18 @@ contract EthPriceOracle {
     // declare Roles.Role variable private called oracles
     Roles.Role private oracles;
 
+    // use SafeMath to protect over/underflow 
+    using SafeMath for uint256;
+
     // generate random number for the request id (avoid collusions of oracles)
     uint private randNonce = 0;
     uint private modulus = 1000;
 
     // initialise number of oracles (to keep track)
     uint private numOracles = 0; 
+
+    // define threshould requests variable after which oracle should calculate price 
+    uint private THRESHOLD = 0;
 
     mapping(uint256=>bool) pendingRequests;
 
@@ -126,20 +133,48 @@ contract EthPriceOracle {
 
         // push resp to array stored in requestIdToResponse[_id]
         requestIdToResponse[_id].push(resp);
+
+        // define variable numresponses to check how many so far 
+        uint numResponses = requestIdToResponse[_id].length;
+
+        // add an if statement comparing numresponses and threshold 
+        if (numResponses == THRESHOLD) {
+            // Lesson 16 Chapter 8
+            // Write a for loop that iterates through all responses for id and calculates the sum
+            // to get average !!! This is not a secure (attackable by oracle manipulation)
+            // Initialise uint computedEthPrice
+            uint computedEthPrice = 0; 
+
+            // declare for loop and goes through responses
+            for (uint f = 0; f < requestIdToResponse[_id].length; f++) {
+                // add to the sum and replace with safemath
+                computedEthPrice = computedEthPrice.add(requestIdToResponse[_id][f].ethPrice);
+            }
+
+            // calculate average by dividing computedEthPrice 
+            computedEthPrice =  computedEthPrice.div(numResponses);
+
+            // remove id from the pendingRequests mapping 
+            delete pendingRequests[_id];
+
+            // remove id from requestIdtoresponse
+            delete requestIdToResponse[_id];
+            
+            // create caller contract interface 
+            CallerContractInterface callerContractInstance;
+
+            // initialise instance with address of caller contract
+            callerContractInstance = CallerContractInterface(_callerAddress);
+
+            // run the caller contractInstance.callback function with new computed eth price
+            callerContractInstance.callback(computedEthPrice, _id);
+
+            // emit the set latest Eth price 
+            emit SetLatestEthPriceEvent(computedEthPrice, _callerAddress);
+        }
         
-        // remove id from the pendingRequests mapping 
-        delete pendingRequests[_id];
 
-        // create caller contract interface 
-        CallerContractInterface callerContractInstance;
 
-        // initialise instance with address of caller contract
-        callerContractInstance = CallerContractInterface(_callerAddress);
-
-        // run the caller contractInstance.callback function 
-        callerContractInstance.callback(_ethPrice, _id);
-
-        // emit the set latest Eth price 
-        emit SetLatestEthPriceEvent(_ethPrice, _callerAddress);
+        
     }
 }

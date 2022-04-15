@@ -1,21 +1,35 @@
-# oracle-builder
-Building an Oracle CryptoZombies Lesson 14
+# Eth Price Oracle
+This project outlines the steps needed to create an oracle that fetches the price of ETH from the Binance API and build a client that interacts with the oracle. Based on [CryptoZombies Lesson 14-16](https://cryptozombies.io/en/lesson/14). 
+
+## Requirements 
+```
+npm
+node
+truffle
+```
 
 ### Installation 
-mkdir EthPriceOracle
-cd EthPriceOracle
-// initialise the project -> creates package.json file
-npm init -y
-// install dependencies 
-npm i truffle openzeppelin-solidity loom-js loom-truffle-provider bn.js axios
+Create and initialise the project (create package.json file)
 
-// CREATE TWO BAREBONE DIRECTORY, ONE FOR ORACLE    and one for caller 
+```
+mkdir EthPriceOracle
+cd EthPriceOracle 
+npm init -y
+````
+
+Install dependencies
+
+```
+npm i truffle openzeppelin-solidity loom-js loom-truffle-provider bn.js axios
+````
+
+Create two barebone directories: one for the oracle and one for the caller
+```
 mkdir oracle && cd oracle && npx truffle init && cd ..
 mkdir caller && cd caller && npx truffle init && cd ..
+```
 
-d
-//EthPriceOracle.js 
-We will create a Javascript component of oracle that fetches ETH price from binance API then build classic client that interacts with the oracle 
+### Getting started
 
 Start oracle by running 
 

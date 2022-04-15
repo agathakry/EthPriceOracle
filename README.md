@@ -53,3 +53,6 @@ truffle compile
 truffle migrate --network rinkeby 
 truffle test --network rinkeby
 ```
+
+## Security Notice
+This project is only an example, do not deploy on mainnet, never share your private keys online.

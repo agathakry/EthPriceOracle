@@ -1,6 +1,10 @@
 # Eth Price Oracle
 This project outlines the steps needed to create an oracle that fetches the price of ETH from the Binance API and build a client that interacts with the oracle. Based on [CryptoZombies Lesson 14-16](https://cryptozombies.io/en/lesson/14). 
 
+<p align="center">
+<img src=https://github.com/agathakry/zkSync/blob/main/assets/bob%20alice.jpg width="30%">
+</p>
+
 ## Requirements 
 ```
 npm
@@ -8,7 +12,7 @@ node
 truffle
 ```
 
-### Installation 
+## Installation 
 Create and initialise the project (create package.json file)
 
 ```
@@ -29,7 +33,7 @@ mkdir oracle && cd oracle && npx truffle init && cd ..
 mkdir caller && cd caller && npx truffle init && cd ..
 ```
 
-### Getting started
+## Getting started
 
 Start oracle by running 
 
@@ -41,4 +45,11 @@ Start the client
 
 ```solidity
 node Client.js
+```
+
+## Deploying and Testing with Truffle and Ganache 
+```
+truffle compile
+truffle migrate --network rinkeby 
+truffle test --network rinkeby
 ```

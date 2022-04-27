@@ -1,6 +1,7 @@
 # Eth Price Oracle
 This project outlines the steps needed to create an oracle that fetches the price of ETH from the Binance API and build a client that interacts with the oracle. Based on [CryptoZombies Lesson 14-16](https://cryptozombies.io/en/lesson/14). 
 
+
 <p align="center">
 <img src=https://github.com/agathakry/EthPriceOracle/blob/main/assets/eth.png width="10%">
 </p>
